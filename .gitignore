@@ -1,0 +1,50 @@
+*.sqlite
+*.db
+*.dll
+*.log
+*.cache
+*.temp
+*.so
+**/Properties/launchSettings.json
+.tmp
+# === .NET Core / Visual Studio ===
+[Dd]ebug/
+[Rr]elease/
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
+*.userosscache
+.vs/
+
+# === NuGet ===
+packages/
+*.nupkg
+
+# === SQLite + EF Core ===
+*.db
+*.sqlite
+*.sqlite3
+*-shm
+*-wal
+*-journal
+
+# === Конфигурация ===
+appsettings.*.local.json
+secrets.json
+**/Properties/launchSettings.json
+
+# === Логи и временные файлы ===
+*.log
+*.tmp
+/Logs/
+/Temp/
+
+# === IDE ===
+.idea/
+*.swp
+*.swo
+.DS_Store
