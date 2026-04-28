@@ -5,7 +5,6 @@
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=flat&logo=dotnet)](https://dotnet.microsoft.com)
 [![SQLite](https://img.shields.io/badge/SQLite-3-003B57?style=flat&logo=sqlite)](https://www.sqlite.org)
 [![EF Core](https://img.shields.io/badge/EF_Core-8-623194?style=flat&logo=dotnet)](https://learn.microsoft.com/ef/core)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ---
 
