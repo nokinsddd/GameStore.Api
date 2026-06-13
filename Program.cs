@@ -20,6 +20,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();              // Generates /openapi/v1.json
     app.MapScalarApiReference();   // Serves docs at /scalar
+    Console.WriteLine(">>>Mapped OpenAPI and Scalar docs endpoints<<< \n >>> URL - http://localhost:5000/scalar <<<");
 }
 
 
