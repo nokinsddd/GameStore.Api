@@ -1,54 +1,50 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
     container_name: gamestore-postgres
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: gamestore
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - gamestore-net
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin
+    container_name: gamestore-pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
       - "5050:80"
-    depends_on:
-      postgres:
-        condition: service_healthy
     networks:
       - gamestore-net
 
   app:
     build: .
-    container_name: gamestore-app
-    environment:
-      ConnectionStrings__GameStore: "User ID=postgres;Password=postgres;Host=postgres;Port=5432;Database=gamestore"
-      ASPNETCORE_ENVIRONMENT: "Development"
+    container_name: gamestore-api
     ports:
       - "5000:5000"
+    environment:
+      - ConnectionStrings__GameStore=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - gamestore-net
-    restart: unless-stopped
-
-networks:
-  gamestore-net:
-    driver: bridge
 
 volumes:
   postgres-data:
+
+networks:
+  gamestore-net:

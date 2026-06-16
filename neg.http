@@ -1,7 +1,7 @@
-GET http://localhost:5140/games
+GET http://localhost:5000/games
 
 ###
-GET http://localhost:5140/games/1
+GET http://localhost:5000/games/1
 
 ###
 GET http://localhost:5000/games/2
@@ -14,7 +14,7 @@ POST http://localhost:5000/games
 Content-Type: application/json
 
 {
-    "name": "Super Negro Bros",
+    "name": "Forza Horizon 6",
     "genreId": 3,
     "price": 59.99,
     "releaseDate": "2023-10-20"
@@ -32,18 +32,18 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:5140/games/2
+PUT http://localhost:5000/games/1
 Content-Type: application/json
 
 {
-    "name": "Street Fighter II Turbo",
-    "genreId": 1,
+    "name": "RE:Village",
+    "genreId": 3,
     "price": 19.99,
     "releaseDate": "2021-12-12"
 }
 
 ###
-DELETE http://localhost:5140/games/3
+DELETE http://localhost:5000/games/7
 
 ###
-GET http://localhost:5140/genres
+GET http://localhost:5000/genres

@@ -8,7 +8,7 @@ docker-compose down 2>/dev/null || true
 
 # Build and start all services
 echo "📦 Building and starting services..."
-docker-compose up --build
+docker-compose up --build -d
 
 echo "✅ All services started!"
 echo "🌐 App: http://localhost:5000"
