@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using GameStore.Api.Data;
 using GameStore.Api.dtos;
 using GameStore.Api.Models;
-
+using GameStore.Api.DTOs;
+using System.ComponentModel.DataAnnotations;
 namespace GameStore.Api.EndPoints;
 
 public static class GamesEndpoints
@@ -13,19 +14,55 @@ public static class GamesEndpoints
     {
         var group = app.MapGroup("/games");
         //GET /games
-        group.MapGet("/", async (GameStoreContext dbContext)
-            => await dbContext.Games
+        app.MapGet("/games", async (GameStoreContext db, [AsParameters] PaginationRequest pagination) =>
+{
+    
+    var context = new ValidationContext(pagination);
+    var results = new List<ValidationResult>();
+    
+    if (!Validator.TryValidateObject(pagination, context, results, true))
+{
+    var errors = results
+        .Select(r => r.ErrorMessage)
+        .OfType<string>()
+        .ToArray();
 
-                                .Include(game => game.Genre)
-                                .Select(game => new GameSummaryDto(
-                                    game.Id,
-                                    game.Name,
-                                    game.Genre!.Name,
-                                    game.Price,
-                                    game.ReleaseDate
-                                ))
-                                .AsNoTracking()
-                                .ToListAsync());
+    return Results.ValidationProblem(new Dictionary<string, string[]>
+    {
+        { "Pagination", errors }
+    });
+}
+
+    
+    var query = db.Games.Include(g => g.Genre);
+
+    
+    var totalCount = await query.CountAsync();
+    var totalPages = (int)Math.Ceiling(totalCount / (double)pagination.PageSize);
+
+    
+    var games = await query
+        .OrderBy(g => g.Id)
+        .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+        .Take(pagination.PageSize)
+        .Select(game => new GameSummaryDto(
+            game.Id,
+            game.Name,
+            game.Genre != null ? game.Genre.Name : "Не указан",
+            game.Price,
+            game.ReleaseDate
+        ))
+        .ToListAsync();
+
+    
+    return Results.Ok(new PagedResult<GameSummaryDto>(
+        games, 
+        totalCount, 
+        pagination.PageNumber, 
+        pagination.PageSize, 
+        totalPages
+    ));
+});
 
         //GET /games/1
         group.MapGet("/{id}", async (int id, GameStoreContext dbContext) => 

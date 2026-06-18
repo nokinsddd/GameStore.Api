@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -35,8 +35,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - ConnectionStrings__GameStore=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
       - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__GameStore=Host=postgres;Port=5432;Database=gamestore;Username=postgres;Password=SuperSecretPassword123!
     depends_on:
       postgres:
         condition: service_healthy

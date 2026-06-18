@@ -1,5 +1,6 @@
 GET http://localhost:5000/games
-
+### 
+GET http://localhost:5000/games?pageNumber=2
 ###
 GET http://localhost:5000/games/1
 
