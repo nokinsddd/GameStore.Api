@@ -48,3 +48,88 @@ DELETE http://localhost:5000/games/7
 
 ###
 GET http://localhost:5000/genres
+
+### 1. Регистрация нового пользователя
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin1",
+  "password": "SuperSecret12322!"
+}
+
+### 2. Логин (получение токена)
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin1",
+  "password": "SuperSecret12322!"
+}
+
+### 3. Попытка создать игру БЕЗ токена (должна вернуть 401 Unauthorized)
+POST http://localhost:5000/games
+Content-Type: application/json
+
+{
+  "name": "Test Game",
+  "genreId": 1,
+  "price": 10.0,
+  "releaseDate": "2024-01-01"
+}
+
+### 4. Создание игры С токеном
+# Скопируй токен из ответа шага 2 (без кавычек) и вставь после "Bearer "
+POST http://localhost:5000/games
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTg5MDUyNywiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.gpslE3fkNufMGDT0rzvQeR9VucZkFMG74Q0J6UBSaoM
+
+{
+  "name": "Test Game",
+  "genreId": 1,
+  "price": 10.0,
+  "releaseDate": "2024-01-01"
+}
+
+### 1. Регистрация обычного пользователя
+POST http://localhost:5000/auth/register
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "User123!"
+}
+
+### 2. Логин обычного пользователя
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "User123!"
+}
+
+### 3. Попытка удалить игру (должна вернуть 403 Forbidden, так как роль User)
+DELETE http://localhost:5000/games/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlcjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzgxODkxNTk3LCJpc3MiOiJHYW1lU3RvcmVBcGkiLCJhdWQiOiJHYW1lU3RvcmVDbGllbnQifQ.NWQ1z0v6f7ExeIDxyBGSRmA9DvLQRaxu9pcO4s0_hKs 
+
+### 4. Назначить роль Admin пользователю user1
+POST http://localhost:5000/auth/make-admin
+Content-Type: application/json
+
+{
+  "username": "user1"
+}
+
+### 5. Логин после назначения роли Admin (получить новый токен с ролью Admin)
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "User123!"
+}
+
+### 6. Удалить игру с ролью Admin (должна вернуть 200 OK)
+DELETE http://localhost:5000/games/14
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlcjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc4MTg5MTc4NSwiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.WaM-4Wvc0-1fe15Ik4kF3UlOIXrJhyuaDmJjtSW1fAE

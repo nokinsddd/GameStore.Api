@@ -13,5 +13,5 @@ docker-compose up --build -d
 echo "✅ All services started!"
 echo "🌐 App: http://localhost:5000"
 echo "📊 pgAdmin: http://localhost:5050"
-echo "🐘 PostgreSQL: localhost:5432"
+echo "🐘 PostgreSQL: localhost:5433"
 

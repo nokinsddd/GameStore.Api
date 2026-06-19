@@ -104,7 +104,9 @@ public static class GamesEndpoints
             );
 
             return Results.CreatedAtRoute(GetGameEndpointName, new {id = gameDto.Id}, gameDto);
-        });
+        })
+        .RequireAuthorization("UserOnly"); 
+        
 
         //PUT /games/1
         group.MapPut("/{id}", async (
@@ -127,7 +129,8 @@ public static class GamesEndpoints
             await dbContext.SaveChangesAsync();
 
            return Results.NoContent();
-        });
+        })
+        .RequireAuthorization("AdminOnly");
 
         //DELETE /games/1
         group.MapDelete("/{id}", async (int id, GameStoreContext dbContext) =>
@@ -137,6 +140,7 @@ public static class GamesEndpoints
                             .ExecuteDeleteAsync();
 
             return Results.NoContent();
-        });
+        })
+        .RequireAuthorization("AdminOnly");
     }
 }

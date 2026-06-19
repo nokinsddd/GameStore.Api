@@ -17,6 +17,7 @@ public static class GenresEndpoints
                             .Select(genre => new GenreDto(genre.Id, genre.Name))
                             .AsNoTracking()
                             .ToListAsync()
-            );
+            )
+            .RequireAuthorization("UserOnly");
     }
 }
