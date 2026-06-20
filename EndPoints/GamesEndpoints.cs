@@ -14,55 +14,91 @@ public static class GamesEndpoints
     {
         var group = app.MapGroup("/games");
         //GET /games
-        app.MapGet("/games", async (GameStoreContext db, [AsParameters] PaginationRequest pagination) =>
-{
-    
-    var context = new ValidationContext(pagination);
-    var results = new List<ValidationResult>();
-    
-    if (!Validator.TryValidateObject(pagination, context, results, true))
-{
-    var errors = results
-        .Select(r => r.ErrorMessage)
-        .OfType<string>()
-        .ToArray();
-
-    return Results.ValidationProblem(new Dictionary<string, string[]>
+        app.MapGet("/games", async (GameStoreContext db, [AsParameters] GetGamesRequest request) =>
     {
-        { "Pagination", errors }
+    // 1. Валидация
+        var context = new ValidationContext(request);
+        var results = new List<ValidationResult>();
+    
+        if (!Validator.TryValidateObject(request, context, results, true))
+        {
+            var errors = results
+                .Select(r => r.ErrorMessage)
+                .OfType<string>()
+                .ToArray();
+
+            return Results.ValidationProblem(new Dictionary<string, string[]>
+            {
+                { "Pagination", errors }
+            });
+        }
+
+        // 2. Базовый запрос с Include
+        var query = db.Games.Include(g => g.Genre).AsQueryable();
+
+        // 3. Фильтрация по жанру
+        if (request.GenreId.HasValue)
+        {
+            query = query.Where(g => g.GenreId == request.GenreId);
+        }
+
+        // 4. Фильтрация по цене
+        if (request.MinPrice.HasValue)
+        {
+            query = query.Where(g => g.Price >= request.MinPrice);
+        }
+        if (request.MaxPrice.HasValue)
+        {
+            query = query.Where(g => g.Price <= request.MaxPrice);
+        }
+
+        // 5. Поиск по названию (case-insensitive)
+        if (!string.IsNullOrWhiteSpace(request.Search))
+        {
+            query = query.Where(g => g.Name.Contains(request.Search));
+        }
+
+        // 6. Сортировка
+        query = request.SortBy?.ToLower() switch
+        {
+            "price" => request.SortOrder?.ToLower() == "desc" 
+                ? query.OrderByDescending(g => g.Price) 
+                : query.OrderBy(g => g.Price),
+            "name" => request.SortOrder?.ToLower() == "desc" 
+                ? query.OrderByDescending(g => g.Name) 
+                : query.OrderBy(g => g.Name),
+            "releasedate" => request.SortOrder?.ToLower() == "desc" 
+                ? query.OrderByDescending(g => g.ReleaseDate) 
+                : query.OrderBy(g => g.ReleaseDate),
+            _ => query.OrderBy(g => g.Id) // По умолчанию сортировка по ID
+        };
+
+        // 7. Считаем метаданные
+        var totalCount = await query.CountAsync();
+        var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
+
+        // 8. Применяем пагинацию и проекцию
+        var games = await query
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
+            .Select(game => new GameSummaryDto(
+                game.Id,
+                game.Name,
+                game.Genre != null ? game.Genre.Name : "Не указан",
+                game.Price,
+                game.ReleaseDate
+            ))
+            .ToListAsync();
+
+        // 9. Возвращаем результат
+        return Results.Ok(new PagedResult<GameSummaryDto>(
+            games, 
+            totalCount, 
+            request.PageNumber, 
+            request.PageSize, 
+            totalPages
+        ));
     });
-}
-
-    
-    var query = db.Games.Include(g => g.Genre);
-
-    
-    var totalCount = await query.CountAsync();
-    var totalPages = (int)Math.Ceiling(totalCount / (double)pagination.PageSize);
-
-    
-    var games = await query
-        .OrderBy(g => g.Id)
-        .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-        .Take(pagination.PageSize)
-        .Select(game => new GameSummaryDto(
-            game.Id,
-            game.Name,
-            game.Genre != null ? game.Genre.Name : "Не указан",
-            game.Price,
-            game.ReleaseDate
-        ))
-        .ToListAsync();
-
-    
-    return Results.Ok(new PagedResult<GameSummaryDto>(
-        games, 
-        totalCount, 
-        pagination.PageNumber, 
-        pagination.PageSize, 
-        totalPages
-    ));
-});
 
         //GET /games/1
         group.MapGet("/{id}", async (int id, GameStoreContext dbContext) => 

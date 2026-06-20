@@ -133,3 +133,33 @@ Content-Type: application/json
 ### 6. Удалить игру с ролью Admin (должна вернуть 200 OK)
 DELETE http://localhost:5000/games/14
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlcjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc4MTg5MTc4NSwiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.WaM-4Wvc0-1fe15Ik4kF3UlOIXrJhyuaDmJjtSW1fAE
+
+### 1. Получить все игры (по умолчанию: страница 1, 10 игр, сортировка по ID)
+GET http://localhost:5000/games
+
+### 2. Сортировка по цене (от дешевых к дорогим)
+GET http://localhost:5000/games?sortBy=price&sortOrder=asc
+
+### 3. Сортировка по цене (от дорогих к дешевым)
+GET http://localhost:5000/games?sortBy=price&sortOrder=desc
+
+### 4. Сортировка по названию (от А до Я)
+GET http://localhost:5000/games?sortBy=name&sortOrder=asc
+
+### 5. Сортировка по дате релиза (новые сначала)
+GET http://localhost:5000/games?sortBy=releaseDate&sortOrder=desc
+
+### 6. Фильтрация по жанру (например, RPG с ID=2)
+GET http://localhost:5000/games?genreId=2
+
+### 7. Фильтрация по цене (от 20 до 50)
+GET http://localhost:5000/games?minPrice=20&maxPrice=50
+
+### 8. Поиск по названию (содержит "Forza")
+GET http://localhost:5000/games?search=Forza
+
+### 9. Комбинированный запрос: RPG, цена 20-60, сортировка по цене desc, страница 2 по 5 игр
+GET http://localhost:5000/games?genreId=2&minPrice=20&maxPrice=60&sortBy=price&sortOrder=desc&pageNumber=2&pageSize=5
+
+### 10. Поиск + сортировка + пагинация
+GET http://localhost:5000/games?search=Street&sortBy=price&sortOrder=asc&pageNumber=1&pageSize=3
