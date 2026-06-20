@@ -49,7 +49,7 @@ DELETE http://localhost:5000/games/7
 ###
 GET http://localhost:5000/genres
 
-### 1. Регистрация нового пользователя
+### 1. registration of a new user
 POST http://localhost:5000/auth/register
 Content-Type: application/json
 
@@ -58,7 +58,7 @@ Content-Type: application/json
   "password": "SuperSecret12322!"
 }
 
-### 2. Логин (получение токена)
+### 2. Login with the new user to get a token
 POST http://localhost:5000/auth/login
 Content-Type: application/json
 
@@ -67,7 +67,7 @@ Content-Type: application/json
   "password": "SuperSecret12322!"
 }
 
-### 3. Попытка создать игру БЕЗ токена (должна вернуть 401 Unauthorized)
+### 3. try to create a game without a token (should return 401 Unauthorized)
 POST http://localhost:5000/games
 Content-Type: application/json
 
@@ -78,8 +78,7 @@ Content-Type: application/json
   "releaseDate": "2024-01-01"
 }
 
-### 4. Создание игры С токеном
-# Скопируй токен из ответа шага 2 (без кавычек) и вставь после "Bearer "
+### 4. create a game with a token (should return 200 OK)
 POST http://localhost:5000/games
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTg5MDUyNywiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.gpslE3fkNufMGDT0rzvQeR9VucZkFMG74Q0J6UBSaoM
@@ -91,7 +90,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hc
   "releaseDate": "2024-01-01"
 }
 
-### 1. Регистрация обычного пользователя
+### 1. user registration
 POST http://localhost:5000/auth/register
 Content-Type: application/json
 
@@ -100,7 +99,7 @@ Content-Type: application/json
   "password": "User123!"
 }
 
-### 2. Логин обычного пользователя
+### 2. user login to get a token
 POST http://localhost:5000/auth/login
 Content-Type: application/json
 
@@ -109,11 +108,11 @@ Content-Type: application/json
   "password": "User123!"
 }
 
-### 3. Попытка удалить игру (должна вернуть 403 Forbidden, так как роль User)
+### 3. try to delete a game with a user token (should return 403 Forbidden)
 DELETE http://localhost:5000/games/2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlcjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzgxODkxNTk3LCJpc3MiOiJHYW1lU3RvcmVBcGkiLCJhdWQiOiJHYW1lU3RvcmVDbGllbnQifQ.NWQ1z0v6f7ExeIDxyBGSRmA9DvLQRaxu9pcO4s0_hKs 
 
-### 4. Назначить роль Admin пользователю user1
+### 4. make user admin (should return 200 OK)
 POST http://localhost:5000/auth/make-admin
 Content-Type: application/json
 
@@ -121,7 +120,7 @@ Content-Type: application/json
   "username": "user1"
 }
 
-### 5. Логин после назначения роли Admin (получить новый токен с ролью Admin)
+### 5. login after making user admin to get a new token (should return 200 OK)
 POST http://localhost:5000/auth/login
 Content-Type: application/json
 
@@ -130,36 +129,124 @@ Content-Type: application/json
   "password": "User123!"
 }
 
-### 6. Удалить игру с ролью Admin (должна вернуть 200 OK)
+### 6. delete a game with the new admin token (should return 200 OK)
 DELETE http://localhost:5000/games/14
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidXNlcjEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJBZG1pbiIsImV4cCI6MTc4MTg5MTc4NSwiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.WaM-4Wvc0-1fe15Ik4kF3UlOIXrJhyuaDmJjtSW1fAE
 
-### 1. Получить все игры (по умолчанию: страница 1, 10 игр, сортировка по ID)
+### 1. get all games(id sorted by default)
 GET http://localhost:5000/games
 
-### 2. Сортировка по цене (от дешевых к дорогим)
+### 2. sort by price (from cheap to expensive)
 GET http://localhost:5000/games?sortBy=price&sortOrder=asc
 
-### 3. Сортировка по цене (от дорогих к дешевым)
+### 3. sort by price (from expensive to cheap)
 GET http://localhost:5000/games?sortBy=price&sortOrder=desc
 
-### 4. Сортировка по названию (от А до Я)
+### 4. sort by name (from A to Z)
 GET http://localhost:5000/games?sortBy=name&sortOrder=asc
 
-### 5. Сортировка по дате релиза (новые сначала)
-GET http://localhost:5000/games?sortBy=releaseDate&sortOrder=desc
+### 5. sort by release date (newest first)
+GET http://localhost:5000/games?sortBy=releaseDate&sortOrder=desc&pageNumber=4&pageSize=10
 
-### 6. Фильтрация по жанру (например, RPG с ID=2)
-GET http://localhost:5000/games?genreId=2
+### 6. filter by genre (e.g., Fighting - genreId=1)
+GET http://localhost:5000/games?genreId=1
 
-### 7. Фильтрация по цене (от 20 до 50)
+### 7. filter by price (from 20 to 50)
 GET http://localhost:5000/games?minPrice=20&maxPrice=50
 
-### 8. Поиск по названию (содержит "Forza")
+### 8. search by name (contains "Forza")
 GET http://localhost:5000/games?search=Forza
-
-### 9. Комбинированный запрос: RPG, цена 20-60, сортировка по цене desc, страница 2 по 5 игр
-GET http://localhost:5000/games?genreId=2&minPrice=20&maxPrice=60&sortBy=price&sortOrder=desc&pageNumber=2&pageSize=5
-
-### 10. Поиск + сортировка + пагинация
+### 10. search + sort + pagination
 GET http://localhost:5000/games?search=Street&sortBy=price&sortOrder=asc&pageNumber=1&pageSize=3
+
+
+### 1. valid review creation (should return 200 OK)
+POST http://localhost:5000/games/16/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk1ODY3MywiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0._-znIB0B1pALZUMRuluVxNguT-JPzg_c8APkohvGVXE
+
+{
+  "rating": 5,
+  "comment": "nice game, good graphics!"
+}
+
+### 2. invalid rating (should return 400)
+POST http://localhost:5000/games/12/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk1ODY3MywiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0._-znIB0B1pALZUMRuluVxNguT-JPzg_c8APkohvGVXE  
+
+{
+  "rating": 10,
+  "comment": "nice game, good graphics!"
+}
+
+### 3. empty comment (should return 400)
+POST http://localhost:5000/games/1/reviews
+Content-Type: application/json
+Authorization: Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk1ODY3MywiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0._-znIB0B1pALZUMRuluVxNguT-JPzg_c8APkohvGVXE  
+
+{
+  "rating": 4,
+  "comment": ""
+}
+
+### 4. too short comment (should return 400)
+POST http://localhost:5000/games/1/reviews
+Content-Type: application/json
+Authorization: Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk1ODY3MywiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0._-znIB0B1pALZUMRuluVxNguT-JPzg_c8APkohvGVXE  
+
+{
+  "rating": 4,
+  "comment": "Too short"
+}
+
+### 1. create a review for a game
+POST http://localhost:5000/games/18/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk2MDY3MCwiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.Z7M7rFwL9HKgwusTRi7hoWCHpnM5I5qST1bzoxPaZXo
+{
+  "rating": 4,
+  "comment": "Good game, but has some bugs."
+}
+
+### 2. update the review
+PUT http://localhost:5000/games/16/reviews/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk2MDY3MCwiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.Z7M7rFwL9HKgwusTRi7hoWCHpnM5I5qST1bzoxPaZXo
+{
+  "rating": 5,
+  "comment": "Excellent game, bugs fixed in the patch!"
+}
+
+### 3. try to update someone else's review (should return 403 Forbidden)
+PUT http://localhost:5000/games/16/reviews/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk2MDY3MCwiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.Z7M7rFwL9HKgwusTRi7hoWCHpnM5I5qST1bzoxPaZXo
+
+{
+  "rating": 1,
+  "comment": "Poor game!"
+}
+
+### 4. delete the review
+DELETE http://localhost:5000/games/16/reviews/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4xIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc4MTk2MDg2OCwiaXNzIjoiR2FtZVN0b3JlQXBpIiwiYXVkIjoiR2FtZVN0b3JlQ2xpZW50In0.xgjxekdE5q7Wp1PSxHSY5qngwMnQDNcXE4lyKPdbZJA
+### 5. try to update a non-existent review (should return 404)
+PUT http://localhost:5000/games/1/reviews/999
+Content-Type: application/json
+Authorization: Bearer YourTokenHere
+
+{
+  "rating": 3,
+  "comment": "Test non-existent review."
+}
+
+### 6. validation: rating out of range (should return 400)
+PUT http://localhost:5000/games/1/reviews/1
+Content-Type: application/json
+Authorization: Bearer YourTokenHere
+
+{
+  "rating": 10,
+  "comment": "Invalid rating."
+}

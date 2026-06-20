@@ -45,6 +45,8 @@ app.UseAuthorization();
 app.MapGamesEndpoints();
 app.MapGenresEndpoints();
 app.MapAuthEndpoints();
+app.MapReviewsEndpoints();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
