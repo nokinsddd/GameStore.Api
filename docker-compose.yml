@@ -36,7 +36,7 @@ services:
       - "5000:5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__GameStore=Host=postgres;Port=5432;Database=gamestore;Username=postgres;Password=SuperSecretPassword123!
+      - ConnectionStrings_GameStore=Host=postgres;Port=5432;Database=gamestore;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     depends_on:
       postgres:
         condition: service_healthy
