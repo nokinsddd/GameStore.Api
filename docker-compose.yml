@@ -2,6 +2,8 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: gamestore-postgres
+    env_file:
+      - .env  # ← Явно указываем файл .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -18,9 +20,21 @@ services:
     networks:
       - gamestore-net
 
+  redis:
+    image: redis:7-alpine
+    container_name: gamestore-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - gamestore-net
+
   pgadmin:
     image: dpage/pgadmin4
     container_name: gamestore-pgadmin
+    env_file:
+      - .env
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
@@ -34,17 +48,27 @@ services:
     container_name: gamestore-api
     ports:
       - "5000:5000"
+    env_file:
+      - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings_GameStore=Host=postgres;Port=5432;Database=gamestore;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__GameStore=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__Redis=redis:6379
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
+      - JwtSettings__ExpireMinutes=${JWT_EXPIRE_MINUTES}
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - gamestore-net
 
 volumes:
   postgres-data:
+  redis-data:
 
 networks:
   gamestore-net:

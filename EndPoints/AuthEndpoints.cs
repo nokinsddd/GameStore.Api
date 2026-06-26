@@ -19,7 +19,7 @@ public static class AuthEndpoints
         group.MapPost("/register", async ([FromBody] RegisterRequest request, GameStoreContext db) =>
         {
             if (await db.Users.AnyAsync(u => u.Username == request.Username))
-                return Results.Conflict("Пользователь уже существует");
+                return Results.Conflict("User already exists");
 
             var user = new User
             {
@@ -31,7 +31,7 @@ public static class AuthEndpoints
             db.Users.Add(user);
             await db.SaveChangesAsync();
 
-            return Results.Ok(new { Message = "Пользователь успешно зарегистрирован" });
+            return Results.Ok(new { Message = "User registered successfully" });
         });
 
         // Login endpoint
@@ -42,7 +42,7 @@ public static class AuthEndpoints
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 return Results.Unauthorized();
 
-            // Генерация JWT токена
+            // generate JWT token
             var jwtSettings = config.GetSection("JwtSettings");
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!));
             var credentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
@@ -71,7 +71,7 @@ public static class AuthEndpoints
             var user = await db.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
     
             if (user == null)
-            return Results.NotFound("Пользователь не найден");
+            return Results.NotFound("User not found");
 
             user.Role = "Admin";
             await db.SaveChangesAsync();

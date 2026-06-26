@@ -32,13 +32,13 @@ packages/
 *-wal
 *-journal
 
-# === Конфигурация ===
+# === Configuration ===
 appsettings.*.local.json
 secrets.json
 **/Properties/launchSettings.json
 *.env
 
-# === Логи и временные файлы ===
+# === Logs and temp files ===
 *.log
 *.tmp
 /Logs/
