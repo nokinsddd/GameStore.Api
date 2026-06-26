@@ -66,22 +66,20 @@ GameStore API is a full-featured backend for a game store with support for:
 ## 🏗 Architecture
 
 ```mermaid
-graph LR
+graph TB
     Client["🖥️ Client"] --> API["ASP.NET Core Web API"]
     
     subgraph API["ASP.NET Core Web API"]
-        direction TB
+        direction LR
         
         subgraph Middleware["Middleware Pipeline"]
-            direction LR
-            Auth[" Authentication"] --> AuthZ["👤 Authorization"] --> CORS["🌐 CORS"]
+            Auth["🔐 Authentication"] --> AuthZ["👤 Authorization"] --> CORS["🌐 CORS"]
         end
         
         subgraph Endpoints["Endpoints"]
-            direction TB
-            AuthEP[" AuthEndpoints"]
-            GamesEP["🎮 GamesEndpoints"]
-            GenresEP["🏷️ GenresEndpoints"]
+            AuthEP["🔑 AuthEndpoints"]
+            GamesEP[" GamesEndpoints"]
+            GenresEP["️ GenresEndpoints"]
             ReviewsEP["💬 ReviewsEndpoints"]
         end
         
@@ -93,10 +91,8 @@ graph LR
     API --> DB[("🗄️ PostgreSQL")]
     API --> Redis[("🔴 Redis Cache")]
     
-    Middleware --> Endpoints
-    Endpoints --> Services
-    Services --> DB
-    Services --> Redis
+    Middleware --> Endpoints --> Services
+    Services --> DB & Redis
     
     style API fill:#2d2d2d,stroke:#4a9eff,stroke-width:2px
     style Middleware fill:#3d3d3d,stroke:#4a9eff
