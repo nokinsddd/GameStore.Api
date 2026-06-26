@@ -66,35 +66,45 @@ GameStore API is a full-featured backend for a game store with support for:
 ## 🏗 Architecture
 
 ```mermaid
-graph TB
-    Client[Client] --> API[ASP.NET Core Web API]
+graph LR
+    Client["🖥️ Client"] --> API["ASP.NET Core Web API"]
     
     subgraph API["ASP.NET Core Web API"]
+        direction TB
+        
         subgraph Middleware["Middleware Pipeline"]
-            Auth[Authentication]
-            AuthZ[Authorization]
-            CORS[CORS]
+            direction LR
+            Auth[" Authentication"] --> AuthZ["👤 Authorization"] --> CORS["🌐 CORS"]
         end
         
         subgraph Endpoints["Endpoints"]
-            AuthEP[AuthEndpoints]
-            GamesEP[GamesEndpoints]
-            GenresEP[GenresEndpoints]
-            ReviewsEP[ReviewsEndpoints]
+            direction TB
+            AuthEP[" AuthEndpoints"]
+            GamesEP["🎮 GamesEndpoints"]
+            GenresEP["🏷️ GenresEndpoints"]
+            ReviewsEP["💬 ReviewsEndpoints"]
         end
         
         subgraph Services["Services"]
-            Cache[CacheService]
+            Cache["⚡ CacheService"]
         end
     end
     
-    API --> DB[(PostgreSQL)]
-    API --> Redis[(Redis Cache)]
+    API --> DB[("🗄️ PostgreSQL")]
+    API --> Redis[("🔴 Redis Cache")]
     
     Middleware --> Endpoints
     Endpoints --> Services
     Services --> DB
     Services --> Redis
+    
+    style API fill:#2d2d2d,stroke:#4a9eff,stroke-width:2px
+    style Middleware fill:#3d3d3d,stroke:#4a9eff
+    style Endpoints fill:#3d3d3d,stroke:#4a9eff
+    style Services fill:#3d3d3d,stroke:#4a9eff
+    style DB fill:#336791,stroke:#fff,color:#fff
+    style Redis fill:#dc382d,stroke:#fff,color:#fff
+    style Client fill:#4a9eff,stroke:#fff,color:#fff
 ```
 ## 🚀 Quick Start
 
