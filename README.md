@@ -64,39 +64,38 @@ GameStore API is a full-featured backend for a game store with support for:
 | **Scalar** | - | API documentation |
 
 ## 🏗 Architecture
-┌─────────────┐
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│      ASP.NET Core Web API           │
-│  ┌──────────────────────────────┐   │
-│  │   Middleware Pipeline        │   │
-│  │  - Authentication            │   │ 
-│  │  - Authorization             │   │
-│  │  - CORS                      │   │
-│  └──────────────────────────────┘   │
-│  ┌──────────────────────────────┐   │
-│  │   Endpoints                  │   │
-│  │  - AuthEndpoints             │   │
-│  │  - GamesEndpoints            │   │
-│  │  - GenresEndpoints           │   │
-│  │  - ReviewsEndpoints          │   │
-│  └──────────────────────────────┘   │
-│  ┌──────────────────────────────┐   │
-│  │   Services                   │   │
-│  │  - CacheService              │   │
-│  └──────────────────────────────┘   │
-└──────────┬──────────────────────────┘
-           │
-    ┌──────┴──────┐
-    │             │
-    ▼             ▼
-┌──────────┐   ┌────────┐
-│PostgreSQL│   │ Redis  │
-│  (DB)    │   │ (Cache)│
-└──────────┘   └────────┘
+
+```mermaid
+graph TB
+    Client[Client] --> API[ASP.NET Core Web API]
+    
+    subgraph API["ASP.NET Core Web API"]
+        subgraph Middleware["Middleware Pipeline"]
+            Auth[Authentication]
+            AuthZ[Authorization]
+            CORS[CORS]
+        end
+        
+        subgraph Endpoints["Endpoints"]
+            AuthEP[AuthEndpoints]
+            GamesEP[GamesEndpoints]
+            GenresEP[GenresEndpoints]
+            ReviewsEP[ReviewsEndpoints]
+        end
+        
+        subgraph Services["Services"]
+            Cache[CacheService]
+        end
+    end
+    
+    API --> DB[(PostgreSQL)]
+    API --> Redis[(Redis Cache)]
+    
+    Middleware --> Endpoints
+    Endpoints --> Services
+    Services --> DB
+    Services --> Redis
+```
 ## 🚀 Quick Start
 
 ### Prerequisites
